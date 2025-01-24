@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 public class RecordReader {
     private final RandomAccessFile randomAccessFile;
+    private final int RECORD_HEADER_BYTE_LENGTH = 32;
 
     RecordReader(File morrowindFile) throws IOException {
         randomAccessFile = new RandomAccessFile(morrowindFile, "r");
@@ -16,13 +17,13 @@ public class RecordReader {
      * @throws IOException when bytes cannot be properly read.
      * @throws ClassNotFoundException when no subclass of Record according to the specified type is found.
      */
-    public Record readRecordHeader() throws IOException, ClassNotFoundException {
+    public Record readRecordHeader() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         byte[] type = new byte[4];
         int size;
 
         long offset = randomAccessFile.getFilePointer();
 
-        // 32 bytes
+        // RECORD_HEADER_BYTE_LENGTH
         randomAccessFile.read(type);
         size = randomAccessFile.readInt();
         int flagAB = randomAccessFile.readInt();
@@ -34,7 +35,7 @@ public class RecordReader {
     public void readSubrecords(Record record) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         byte[] buffer = new byte[record.getSize()];
         randomAccessFile.seek(record.getOffset());
-        randomAccessFile.skipBytes(32); // skip the header
+        randomAccessFile.skipBytes(RECORD_HEADER_BYTE_LENGTH); // skip the header
         randomAccessFile.readFully(buffer);
 
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(buffer));

@@ -1,5 +1,6 @@
 package ca.cyberscientist;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import static java.lang.Integer.toHexString;
@@ -16,7 +17,7 @@ public class Record {
                   long offset,
                   int size,
                   int flagAB,
-                  int flagCD) throws ClassNotFoundException {
+                  int flagCD) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.size = size;
         this.offset = offset;
         switch (toHexString(flagAB)) {
@@ -31,7 +32,7 @@ public class Record {
             default:
                 throw new IllegalStateException("Unexpected TES3RecordFlag value from stream: " + toHexString(flagCD));
         }
-        this.getClass().asSubclass(Class.forName(recordType));
+        Class.forName(recordType).getConstructor().newInstance();
     }
 
     public Record() {
