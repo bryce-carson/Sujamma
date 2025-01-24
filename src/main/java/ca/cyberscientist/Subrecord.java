@@ -1,0 +1,15 @@
+package ca.cyberscientist;
+
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+
+public class Subrecord {
+    private DataInputStream inputStream;
+
+    public Subrecord(String subrecordType, DataInputStream inputStream) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        this.getClass()
+                .asSubclass(Class.forName(subrecordType))
+                .getConstructor(DataInputStream.class)
+                .newInstance(inputStream);
+    }
+}
