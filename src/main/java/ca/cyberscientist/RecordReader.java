@@ -2,6 +2,7 @@ package ca.cyberscientist;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class RecordReader {
@@ -29,7 +30,7 @@ public class RecordReader {
         int flagAB = randomAccessFile.readInt();
         int flagCD = randomAccessFile.readInt();
 
-        return new Record(Arrays.toString(type), offset, size, flagAB, flagCD);
+        return new Record(new String(type, StandardCharsets.UTF_8), offset, size, flagAB, flagCD);
     }
 
     public void readSubrecords(Record record) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {

@@ -23,12 +23,14 @@ public class Record {
         switch (toHexString(flagAB)) {
             case "2000": this.flagAB = TES3RecordFlag.BLOCKED; break;
             case "400": this.flagAB = TES3RecordFlag.PERSISTENT; break;
+            case "0": this.flagAB = TES3RecordFlag.UNKNOWN; break;
             default:
                 throw new IllegalStateException("Unexpected TES3RecordFlag value from stream: " + toHexString(flagAB));
         }
         switch (toHexString(flagCD)) {
             case "2000": this.flagCD = TES3RecordFlag.BLOCKED; break;
             case "400": this.flagCD = TES3RecordFlag.PERSISTENT; break;
+            case "0": this.flagAB = TES3RecordFlag.UNKNOWN; break;
             default:
                 throw new IllegalStateException("Unexpected TES3RecordFlag value from stream: " + toHexString(flagCD));
         }
