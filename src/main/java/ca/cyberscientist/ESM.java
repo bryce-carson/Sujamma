@@ -6,7 +6,5 @@ import java.lang.reflect.InvocationTargetException;
 public class ESM extends File {
     public ESM(String pathname) throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(pathname);
-        this.recordReader = new RecordReader(this);
-        recordReader.readRecordHeader();
     }
 }
