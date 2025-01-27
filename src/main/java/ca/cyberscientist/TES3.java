@@ -1,4 +1,4 @@
-package ca.cyberscientist;
+package ca.cyberscientist.Sujamma;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
