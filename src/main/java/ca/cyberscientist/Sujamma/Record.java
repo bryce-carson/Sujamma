@@ -1,8 +1,9 @@
 package ca.cyberscientist.Sujamma;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.io.Serializable;
+import java.util.Objects;
 
 import static java.lang.Integer.toHexString;
 
@@ -22,51 +23,38 @@ public class Record implements Serializable {
                   int flag1) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.name = name;
         this.size = size;
-        this.offset = offset;
         this.flags[0] = enumerateFlags(flag0);
         this.flags[1] = enumerateFlags(flag1);
 
     }
-    
+
     private Flag enumerateFlags(int flag) {
-    	return switch (toHexString(flag)) {
-            case "2000": Flag.BLOCKED; break;
-            case "400": Flag.PERSISTENT; break;
-            case "0": Flag.UNKNOWN; break;
-            default:
-                throw new IllegalStateException("Unexpected TES3RecordFlag integer value from stream: " + toHexString(flagAB));
-        };
+		return (Flag) flag;
     }
 
-    public Record();
+    public Record() {
 
-	public int getSize() {
-		if (null.equals(this.size)) {
-			int sum;
-			subrecords.forEach(x -> sum += x.getSize());
-			return sum;
-		} else {
-			return this.size;
-		}
-	}
-    
-    public int getOffset() {
-    	return this.offset;
+    }
+
+    public int getSize() {
+        return this.size;
     }
     
-    private void writeObject(java.io.ObjectOutputStream out)
-     throws IOException {
+    @Serial
+	private void writeObject(ObjectOutputStream out)
+            throws IOException, IOException {
      	 ByteArrayOutputStream temporaryStream = new ByteArrayOutputStream();
      	 subrecords.forEach(s -> s.writeObject(temporaryStream));
      	 
      	 out.writeBytes(this.name);
      	 out.writeInt(temporaryStream.size());
-     	 out.writeInt((int) this.flags[0]);
-     	 out.writeInt((int) this.flags[1]);
-     	 temporaryStream.writeTo(out);
+        out.writeInt((int) this.flags[0]);
+        out.writeInt((int) this.flags[1]);
+        temporaryStream.writeTo(out);
      }
      
-     private void readObject(java.io.ObjectInputStream in)
+     @Serial
+	 private void readObject(java.io.ObjectInputStream in)
      throws IOException, ClassNotFoundException {
      	 byte[] nameBytes = new byte[4];
      	 in.readFully(nameBytes);
@@ -82,11 +70,12 @@ public class Record implements Serializable {
      	 while (bytesAvailable >= Subrecord.HEADER_SIZE_BYTES) {
      	 	 this.subrecords.add(Subrecord.readObject(in)); // throws if insufficientBytesAvailable
      	 	 bytesAvailable -= Subrecord.HEADER_SIZE_BYTES;
-     	 	 bytesAvailable -= this.subrecords.last().getSize();
+     	 	 bytesAvailable -= this.subrecords.getLast().getSize();
      	 }
      }
      
-     private void readObjectNoData()
+     @Serial
+	 private void readObjectNoData()
      throws ObjectStreamException {
      }
 }

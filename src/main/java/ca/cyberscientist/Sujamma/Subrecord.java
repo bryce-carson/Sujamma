@@ -1,20 +1,17 @@
 package ca.cyberscientist.Sujamma;
 
 import java.io.*;
-import ca.cyberscientist.Sujamma.Data;
+import java.util.ArrayList;
 
 public class Subrecord {
-	package final int HEADER_SIZE_BYTES = 8;
+	public static final int HEADER_SIZE_BYTES = 8;
 	
 	public String name;
 	public int size;
 	
 	private ArrayList<Object> data;
 
-    public Subrecord() {
-    }
-
-    public Subrecord() {}
+	public Subrecord() {}
 
     public int getSize() {
         return this.size;
@@ -30,7 +27,7 @@ public class Subrecord {
      	 temporaryStream.writeTo(out);
      }
      
-     private void readObject(java.io.ObjectInputStream in)
+     private static void readObject(java.io.ObjectInputStream in)
      throws IOException, ClassNotFoundException {
      	 byte[] nameBytes = new byte[4];
      	 in.readFully(nameBytes);

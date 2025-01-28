@@ -1,4 +1,4 @@
-package ca.cyberscientist;
+package ca.cyberscientist.Sujamma;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

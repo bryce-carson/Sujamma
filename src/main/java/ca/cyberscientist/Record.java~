@@ -1,0 +1,53 @@
+package ca.cyberscientist;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
+import static java.lang.Integer.toHexString;
+
+public class Record {
+    public ArrayList<Subrecord> subrecords;
+    public TES3RecordFlag flagAB;
+    public TES3RecordFlag flagCD;
+
+    private int size;
+    private long offset;
+
+    public Record(String recordType,
+                  long offset,
+                  int size,
+                  int flagAB,
+                  int flagCD) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        this.size = size;
+        this.offset = offset;
+        this.flagAB = enumerateFlags(flagAB);
+        this.flagCD = enumerateFlags(flagCD);
+        return Class.forName(recordType).getConstructor().newInstance();
+    }
+    
+    private TES3RecordFlag enumerateFlags(int flag) {
+    	return switch (toHexString(flag)) {
+            case "2000": TES3RecordFlag.BLOCKED; break;
+            case "400": TES3RecordFlag.PERSISTENT; break;
+            case "0": TES3RecordFlag.UNKNOWN; break;
+            default:
+                throw new IllegalStateException("Unexpected TES3RecordFlag integer value from stream: " + toHexString(flagAB));
+        };
+    }
+
+    public Record();
+
+	public int getSize() {
+		if (null.equals(this.size)) {
+			int sum;
+			subrecords.forEach(x -> sum += x.getSize());
+			return sum;
+		} else {
+			return this.size;
+		}
+	}
+    
+    public int getOffset() {
+    	return this.offset;
+    }
+}
